@@ -78,3 +78,66 @@ export const deleteProduct = async (req,res)=>{
         res.status(500).json({message:"Internal server error",error:error});
     }
 }
+
+export const getProductByCategory = async (req,res) =>{
+    try {
+        const {category} = req.params;
+        const products = await Product.find({category:category});
+        if(!products){
+            return res.status(404).json({message:"No products found in this category"});
+        }
+        res.status(200).json({products});
+    } catch (error) {
+        console.error("Error in getProductByCategory controller",error);
+        res.status(500).json({message:"Internal server error",error:error})
+    }
+}
+
+export const getReccomendedProducts = async (req,res) => {
+    try {
+        const products = await Product.aggregate([
+            {
+                $sample:{size:3}
+            },
+            {
+                $project:{
+                    _id:1,
+                    name:1,
+                    price:1,
+                    image:1,
+                    description:1
+                }
+            }
+        ]);
+        res.json({products});
+    } catch (error) {
+        console.error("Error in getReccomendedProducts Route",error);
+        res.status(500).json({message:"Internal server error",error:error});
+    }
+}
+
+export const toggleFeatureProduct = async (req,res) => {
+    try {
+        const product = await Product.findById(req.params.id);
+        if(product){
+            product.isFeatured = !product.isFeatured;
+            const updateProduct = await product.save();
+            await updateFeaturedProductCache();
+            res.json(updateProduct);
+        }else{
+            res.status(404).json({message:"Product not found"});
+        }
+    } catch (error) {
+        console.error("Error in toggleFeaturedProduct Route",error);
+        res.status(500).json({message:"Internal server error",error:error});
+    }
+}
+
+async function updateFeaturedProductCache() {
+    try {
+        const featuredProducts = await Product.find({isFeatured:true}).lean();
+        await redis.set("featured_product",JSON.stringify(featuredProducts));
+    } catch (error) {
+        console.error("Error in updatedFeaturedProductCache function",error);
+    }
+}

@@ -4,6 +4,7 @@ import SignUpPage from "./pages/SignUpPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import Navbar from "./components/Navbar.jsx";
 import LoadingSpinner from "./components/LoadingSpinner.jsx";
+import AdminPage from "./pages/AdminPage.jsx";
 import { Toaster } from "react-hot-toast";
 import { useUserStore } from "./stores/useUserStore.js";
 import { useEffect } from "react";
@@ -29,6 +30,11 @@ function App() {
         <Route path="/" element={<HomePage/>}/>
         <Route path='/signup' element={!user ? <SignUpPage /> : <Navigate to='/' />} />
 				<Route path='/login' element={!user ? <LoginPage /> : <Navigate to='/' />} />
+        <Route
+						path='/secret-dashboard'
+						element={user?.role === "admin" ? <AdminPage /> : <Navigate to='/login' />}
+					/>
+
       </Routes>
     </div>
     <Toaster />

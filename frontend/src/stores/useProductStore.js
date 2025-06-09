@@ -16,7 +16,7 @@ export const useProductStore = create((set) => ({
 				loading: false,
 			}));
 		} catch (error) {
-			toast.error(error.response.data.error);
+			toast.error(error.response?.data?.error);
 			set({ loading: false });
 		}
 	},
@@ -29,7 +29,7 @@ export const useProductStore = create((set) => ({
 			set({ products: response.data.products, loading: false });
 		} catch (error) {
 			set({ error: "Failed to fetch products", loading: false });
-			toast.error(error.response.data.error || "Failed to fetch products");
+			toast.error(error.response?.data?.error || "Failed to fetch products");
 		}
 	},
 	fetchProductsByCategory: async (category) => {
@@ -52,7 +52,7 @@ export const useProductStore = create((set) => ({
 			}));
 		} catch (error) {
 			set({ loading: false });
-			toast.error(error.response.data.error || "Failed to delete product");
+			toast.error(error.response?.data?.error || "Failed to delete product");
 		}
 	},
 	toggleFeaturedProduct: async (productId) => {
@@ -68,7 +68,7 @@ export const useProductStore = create((set) => ({
 			}));
 		} catch (error) {
 			set({ loading: false });
-			toast.error(error.response.data.error || "Failed to update product");
+			toast.error(error.response?.data?.error || "Failed to update product");
 		}
 	},
 	fetchFeaturedProducts: async () => {

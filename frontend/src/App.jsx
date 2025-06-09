@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage.jsx";
 import Navbar from "./components/Navbar.jsx";
 import LoadingSpinner from "./components/LoadingSpinner.jsx";
 import AdminPage from "./pages/AdminPage.jsx";
+import CategoryPage from "./pages/CategoryPage.jsx";
 import { Toaster } from "react-hot-toast";
 import { useUserStore } from "./stores/useUserStore.js";
 import { useEffect } from "react";
@@ -34,6 +35,7 @@ function App() {
 						path='/secret-dashboard'
 						element={user?.role === "admin" ? <AdminPage /> : <Navigate to='/login' />}
 					/>
+        <Route path='/category/:category' element={<CategoryPage />} />
 
       </Routes>
     </div>

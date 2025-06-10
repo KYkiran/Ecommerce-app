@@ -15,23 +15,18 @@ export const getAllProducts = async (req,res)=>{
 
 export const getFeaturedProducts = async (req, res) => {
     try {
-        // Check if featured products exist in Redis cache
         let featuredProducts = await redis.get("featured_products");
         if (featuredProducts) {
             return res.json(JSON.parse(featuredProducts));
         }
-
-        // If not in cache, fetch from database
-        // FIXED: Added await to execute the query
         featuredProducts = await Product.find({ isFeatured: true }).lean();
         
-        // FIXED: Check for empty array, not falsy value
         if (!featuredProducts || featuredProducts.length === 0) {
             return res.status(404).json({ message: "No featured products found" });
         }
 
         // Cache the results in Redis with expiration (optional)
-        await redis.set("featured_products", JSON.stringify(featuredProducts), "EX", 3600); // Cache for 1 hour
+        await redis.set("featured_products", JSON.stringify(featuredProducts)); // Cache for 1 hour
 
         // FIXED: Return the products directly, not wrapped in an object
         res.json(featuredProducts);

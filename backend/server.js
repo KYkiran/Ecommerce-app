@@ -12,7 +12,7 @@ import cookieParser from "cookie-parser";
 
 dotenv.config();
 const app = express();
-const PORT = 5000 | process.env.PORT;
+const PORT = 5000 || process.env.PORT;
 
 const __dirname = path.resolve();
 
